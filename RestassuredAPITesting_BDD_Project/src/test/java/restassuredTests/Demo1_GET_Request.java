@@ -2,6 +2,7 @@ package restassuredTests;
 
 import org.testng.annotations.Test;
 
+import RerunAutomation.RerunAutomationScripts;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.*;
@@ -68,6 +69,18 @@ public class Demo1_GET_Request {
 			String uri = ApplicationConstants.baseURI + ApplicationConstants.basePathSingleUserNotFoundURI;
 			given().when().get(uri).then().statusCode(ApplicationConstants.StatusCode404)
 					.statusLine(ApplicationConstants.StatusLine404).assertThat().body("", null)
+					.header("Content-Type", ApplicationConstants.ContentType).log().all().extract().response();
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage().toString());
+		}
+	}
+	
+	@Test(retryAnalyzer=RerunAutomationScripts.class, testName = "TC004getSingleUser", description = "Get single user", groups = "Regression", priority = 1)
+	public void TC004getSingleUser() {
+		try {
+			String uri = ApplicationConstants.baseURI + ApplicationConstants.basePathSingleUserURI;
+			Response response = given().when().get(uri).then().statusCode(200)
+					.statusLine(ApplicationConstants.StatusLineOK).assertThat().body("data.id", equalTo(4))
 					.header("Content-Type", ApplicationConstants.ContentType).log().all().extract().response();
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage().toString());
